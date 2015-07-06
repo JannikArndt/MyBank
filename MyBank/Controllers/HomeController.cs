@@ -18,6 +18,10 @@ namespace MyBank.Controllers
             _bank = new ApplicationDbContext();
         }
 
+        /// <summary>
+        /// Listet alle Konten des aktuellen Benutzers auf.
+        /// </summary>
+        /// <returns></returns>
         [Authorize]
         public ActionResult Index()
         {
@@ -26,6 +30,10 @@ namespace MyBank.Controllers
             return View(accounts);
         }
 
+        /// <summary>
+        /// Erstellt ein neues Konto für den aktuell angemeldeten Benutzer.
+        /// </summary>
+        /// <returns></returns>
         [Authorize]
         public RedirectToRouteResult Create()
         {
@@ -42,6 +50,110 @@ namespace MyBank.Controllers
             _bank.SaveChanges();
 
             // Zeige die Übersichtsseite (Index) an:
+            return RedirectToAction("Index");
+        }
+
+        /// <summary>
+        /// Zeigt den View zur Einzahlung an.
+        /// </summary>
+        /// <param name="account">Kontonummer</param>
+        /// <returns></returns>
+        [HttpGet]
+        [Authorize]
+        public ActionResult PayIn(int account)
+        {
+            return View(account);
+        }
+
+        /// <summary>
+        /// Methode um die Einzahlung durchzuführen. Muss via POST aufgerufen werden!
+        /// </summary>
+        /// <param name="account">Kontonummer</param>
+        /// <param name="amount">Betrag</param>
+        /// <returns>Führt zur Index zurück</returns>
+        [HttpPost]
+        [Authorize]
+        public RedirectToRouteResult PayIn(int account, double amount)
+        {
+            var myAccount = _bank.Accounts.FirstOrDefault(acc => acc.Number == account);
+            if (myAccount == null)
+                return RedirectToAction("Index");
+
+            myAccount.PayIn(amount);
+            _bank.SaveChanges();
+
+            return RedirectToAction("Index");
+        }
+
+        /// <summary>
+        /// Zeigt den View zur Abhebung an.
+        /// </summary>
+        /// <param name="account">Kontonummer</param>
+        /// <returns></returns>
+        [HttpGet]
+        [Authorize]
+        public ActionResult Withdraw(int account)
+        {
+            return View(account);
+        }
+
+        /// <summary>
+        /// Methode um die Abhebung durchzuführen. Muss via POST aufgerufen werden!
+        /// </summary>
+        /// <param name="account">Kontonummer</param>
+        /// <param name="amount">Betrag</param>
+        /// <returns>Führt zur Index zurück</returns>
+        [HttpPost]
+        [Authorize]
+        public RedirectToRouteResult Withdraw(int account, double amount)
+        {
+            var myAccount = _bank.Accounts.FirstOrDefault(acc => acc.Number == account);
+            if (myAccount != null)
+            {
+                if (!myAccount.Withdraw(amount))
+                    return RedirectToAction("Index");
+            }
+            else
+                return RedirectToAction("Index");
+
+            _bank.SaveChanges();
+            return RedirectToAction("Index");
+        }
+
+        /// <summary>
+        /// Zeigt den View zur Überweisung an.
+        /// </summary>
+        /// <param name="account">Kontonummer</param>
+        /// <returns></returns>
+        [HttpGet]
+        [Authorize]
+        public ActionResult Transfer(int account)
+        {
+            return View(account);
+        }
+
+        /// <summary>
+        /// Methode um die Überweisung durchzuführen. Muss via POST aufgerufen werden!
+        /// </summary>
+        /// <param name="from">Zahlungspflichtiger</param>
+        /// <param name="to">Zahlungsempfänger</param>
+        /// <param name="amount">Betrag</param>
+        /// <returns>Führt zur Index zurück</returns>
+        [HttpPost]
+        [Authorize]
+        public RedirectToRouteResult Transfer(int from, int to, double amount)
+        {
+            var sender = _bank.Accounts.FirstOrDefault(acc => acc.Number == from);
+            var receiver = _bank.Accounts.FirstOrDefault(acc => acc.Number == to);
+            if (sender != null && receiver != null)
+            {
+                if (!sender.Transfer(amount, receiver))
+                    return RedirectToAction("Index");
+            }
+            else
+                return RedirectToAction("Index");
+
+            _bank.SaveChanges();
             return RedirectToAction("Index");
         }
     }
