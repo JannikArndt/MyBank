@@ -23,11 +23,19 @@ namespace MyBank.Controllers
         /// </summary>
         /// <returns></returns>
         [Authorize]
-        public ActionResult Index()
+        public ActionResult Index(string message = "", bool error = false, bool success = false)
         {
             var userId = _userManager.FindById(User.Identity.GetUserId()).Id;
-            var accounts = _bank.Accounts.Where(account => account.OwnerId == userId).ToList();
-            return View(accounts);
+
+            var model = new AccountOverviewViewModel
+            {
+                Accounts = _bank.Accounts.Where(account => account.OwnerId == userId).ToList(),
+                Message = message,
+                Error = error,
+                Success = success
+            };
+
+            return View(model);
         }
 
         /// <summary>
@@ -50,7 +58,7 @@ namespace MyBank.Controllers
             _bank.SaveChanges();
 
             // Zeige die Übersichtsseite (Index) an:
-            return RedirectToAction("Index");
+            return RedirectToAction("Index", new { message = "Das Konto Nummer " + accountNumber + "wurde erfolgreich angelegt.", success = true });
         }
 
         /// <summary>
@@ -77,12 +85,12 @@ namespace MyBank.Controllers
         {
             var myAccount = _bank.Accounts.FirstOrDefault(acc => acc.Number == account);
             if (myAccount == null)
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", new { message = "Konto nicht gefunden", error = true });
 
             myAccount.PayIn(amount);
             _bank.SaveChanges();
 
-            return RedirectToAction("Index");
+            return RedirectToAction("Index", new { message = "Betrag erfolgreich eingezahlt.", success = true });
         }
 
         /// <summary>
@@ -111,13 +119,13 @@ namespace MyBank.Controllers
             if (myAccount != null)
             {
                 if (!myAccount.Withdraw(amount))
-                    return RedirectToAction("Index");
+                    return RedirectToAction("Index", new { message = "Die Deckung des Kontos reicht nicht aus.", error = true });
             }
             else
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", new { message = "Konto nicht gefunden.", error = true });
 
             _bank.SaveChanges();
-            return RedirectToAction("Index");
+            return RedirectToAction("Index", new { message = "Betrag erfolgreich abgehoben.", success = true });
         }
 
         /// <summary>
@@ -148,13 +156,13 @@ namespace MyBank.Controllers
             if (sender != null && receiver != null)
             {
                 if (!sender.Transfer(amount, receiver))
-                    return RedirectToAction("Index");
+                    return RedirectToAction("Index", new { message = "Die Deckung des Kontos reicht nicht aus.", error = true });
             }
             else
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", new { message = "Konto nicht gefunden.", error = true });
 
             _bank.SaveChanges();
-            return RedirectToAction("Index");
+            return RedirectToAction("Index", new { message = "Betrag erfolgreich überwiesen.", success = true });
         }
     }
 }

@@ -1,6 +1,15 @@
-﻿@model List<MyBank.Models.BankAccount>
+﻿@model MyBank.Models.AccountOverviewViewModel
 
 <h2>Meine Konten</h2>
+
+@if (Model.Error)
+{
+    <div class="alert alert-danger">@Model.Message</div>
+}
+@if(Model.Success)
+{
+    <div class="alert alert-success">@Model.Message</div> 
+}
 
 <table class="table">
     <tr>
@@ -8,7 +17,7 @@
         <td>Guthaben</td>
         <td>Aktion</td>
     </tr>
-    @foreach (var bankAccount in Model)
+    @foreach (var bankAccount in Model.Accounts)
     {
         <tr>
             <td>@bankAccount.Number</td>
