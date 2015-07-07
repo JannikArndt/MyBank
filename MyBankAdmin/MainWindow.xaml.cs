@@ -20,9 +20,23 @@ namespace MyBankAdmin
     /// </summary>
     public partial class MainWindow : Window
     {
+        public Entities Bank { get; set; }
         public MainWindow()
         {
             InitializeComponent();
+            Bank = new Entities();
+            UsersListBox.ItemsSource = Bank.AspNetUsers.ToList();
+        }
+
+        private void UsersListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var user = (sender as ListBox).SelectedItem as AspNetUser;
+
+            IdTextBox.Text = user.Id;
+            NameTextBox.Text = user.UserName;
+            EmailTextBox.Text = user.Email;
+            PhoneTextBox.Text = user.PhoneNumber;
+            AccountsDataGrid.ItemsSource = user.BankAccounts;
         }
     }
 }
