@@ -30,13 +30,7 @@ namespace MyBankAdmin
 
         private void UsersListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            var user = (sender as ListBox).SelectedItem as AspNetUser;
-
-            IdTextBox.Text = user.Id;
-            NameTextBox.Text = user.UserName;
-            EmailTextBox.Text = user.Email;
-            PhoneTextBox.Text = user.PhoneNumber;
-            AccountsDataGrid.ItemsSource = user.BankAccounts;
+            UserItemsGrid.DataContext = (sender as ListBox).SelectedItem as AspNetUser;
         }
     }
 }
