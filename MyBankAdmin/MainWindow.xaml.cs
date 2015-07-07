@@ -31,6 +31,12 @@ namespace MyBankAdmin
         private void UsersListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             UserItemsGrid.DataContext = (sender as ListBox).SelectedItem as AspNetUser;
+            Bank.SaveChanges();
+        }
+
+        private void AccountsDataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            Bank.SaveChanges();
         }
     }
 }

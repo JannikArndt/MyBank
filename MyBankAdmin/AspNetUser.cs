@@ -17,7 +17,7 @@ namespace MyBankAdmin
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public AspNetUser()
         {
-            this.BankAccounts = new HashSet<BankAccount>();
+            this.BankAccounts = new List<BankAccount>();
         }
     
         public string Id { get; set; }
@@ -34,6 +34,6 @@ namespace MyBankAdmin
         public string UserName { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<BankAccount> BankAccounts { get; set; }
+        public virtual List<BankAccount> BankAccounts { get; set; }
     }
 }

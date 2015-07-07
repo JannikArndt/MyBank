@@ -37,7 +37,7 @@
             <TextBox Grid.Row="3" Grid.Column="1" Name="PhoneTextBox" Margin="5" Text="{Binding PhoneNumber}" />
 
             <Label Grid.Row="4" Grid.Column="0" Content="Konten" />
-            <DataGrid Grid.Row="4" Grid.Column="1" Name="AccountsDataGrid" Margin="5" AutoGenerateColumns="False" ItemsSource="{Binding BankAccounts}">
+            <DataGrid Grid.Row="4" Grid.Column="1" Name="AccountsDataGrid" Margin="5" AutoGenerateColumns="False" ItemsSource="{Binding BankAccounts}" SelectionChanged="AccountsDataGrid_SelectionChanged">
                 <DataGrid.Columns>
                     <DataGridTextColumn Binding="{Binding Path=Number}" Header="Kontonummer" Width="*" />
                     <DataGridTextColumn Binding="{Binding Path=Balance, ConverterCulture='de-DE', StringFormat={}{0:C}}" Header="Saldo" Width="*" />
