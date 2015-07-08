@@ -10,6 +10,7 @@ Die Anleitungen sind hier oder im Ordner "Turorial" zu finden.
   3. [Einfügen der Create-Methode](#einfügen-der-create-methode)
   4. [Weitere Methoden und Views](#weitere-methoden-und-views)
   5. [Erweiterung zum ViewModel](#erweiterung-zum-viewmodel)
+  6. [Didaktische Reserve: Asynchrone Aufrufe](#didaktische-reserve-asynchrone-aufrufe)
 2. [Beispielprojekt "MyBankAdmin"](#beispielprojekt-mybankadmin)
   1. [Datenbankanbindung einfügen](#datenbankanbindung-einfügen)
   2. [Einträge anzeigen](#einträge-anzeigen)
@@ -496,6 +497,22 @@ Nun muss nur noch der View angepasst werden:
 Nun werden nach allen Aktionen Erfolgs- oder Fehlermeldungen ausgegeben:
 
 ![](https://raw.githubusercontent.com/JannikArndt/MyBank/master/Tutorial/image27.png)
+
+## Didaktische Reserve: Asynchrone Aufrufe
+Das MVC-Framework macht es sehr einfach, Aufrufe an den Controller asynchron auszuführen, d.h. während der Prozessor auf eine Antwort von z.B. einem Webservice  wartet kann er andere Aufgaben z.B. von anderen Benutzern ausführen. Die `FindById()`-Methode des UserManagers bietet auch eine asynchrone Variante `FindByIdAsync()`. Über das Schlüsselwort `await` kann man dem Prozessor signalisieren, dass das Ergebnis der Methode im weiteren Verlauf benötigt wird, er also mit dieser Aufgabe erst fortfahren kann, wenn das Ergebnis geliefert wurde. Dadurch ändert sich auch die Signatur der Methode leicht, sie bekommt das `async`-Schlüsselwort hinzu und gibt statt eines ActionResults nun ein `Task<ActionResult>` zurück:
+
+```csharp
+public async Task<ActionResult> Index(string message = "", bool error = false, bool success = false)
+{
+    var user = await _userManager.FindByIdAsync(User.Identity.GetUserId());
+    var userId = user.Id;
+
+    …
+
+    return View(model);
+}
+```
+
 
 # Beispielprojekt „MyBankAdmin"
 
