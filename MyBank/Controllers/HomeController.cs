@@ -2,6 +2,7 @@
 using Microsoft.AspNet.Identity.Owin;
 using MyBank.Models;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 
@@ -23,9 +24,10 @@ namespace MyBank.Controllers
         /// </summary>
         /// <returns></returns>
         [Authorize]
-        public ActionResult Index(string message = "", bool error = false, bool success = false)
+        public async Task<ActionResult> Index(string message = "", bool error = false, bool success = false)
         {
-            var userId = _userManager.FindById(User.Identity.GetUserId()).Id;
+            var user = await _userManager.FindByIdAsync(User.Identity.GetUserId());
+            var userId = user.Id;
 
             var model = new AccountOverviewViewModel
             {
