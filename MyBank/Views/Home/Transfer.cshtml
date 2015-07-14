@@ -5,10 +5,10 @@
 
 @using (Html.BeginForm("Transfer", "Home", FormMethod.Post, new { @class = "form-horizontal" }))
 {
-    <label for="amount">Betrag</label>
+    @Html.Label("Betrag")
     @Html.TextBox("amount", "", new { @class = "form-control" })
     <br />
-    <label for="to">Empfänger</label>
+    @Html.Label("Empfänger")
     @Html.TextBox("to", "", new { @class = "form-control" })
     @Html.Hidden("from", Model.ToString())
     <br />
