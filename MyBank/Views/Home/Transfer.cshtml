@@ -1,16 +1,26 @@
-﻿@model int
+﻿@model MyBank.Models.TransferViewModel
+
 @{    Layout = "~/Views/Shared/_Layout.cshtml";}
 
 <h2>Überweisen</h2>
 
 @using (Html.BeginForm("Transfer", "Home", FormMethod.Post, new { @class = "form-horizontal" }))
 {
-    @Html.Label("Betrag")
-    @Html.TextBox("amount", "", new { @class = "form-control" })
-    <br />
-    @Html.Label("Empfänger")
-    @Html.TextBox("to", "", new { @class = "form-control" })
+    @Html.ValidationSummary(true)
+
+    @Html.LabelFor(m => m.Amount)
+    @Html.TextBoxFor(m => m.Amount, new { @class = "form-control" })
+    @Html.ValidationMessageFor(m => m.Amount)
+    <br /><br />
+    @Html.LabelFor(m => m.To)
+    @Html.TextBoxFor(m => m.To, new { @class = "form-control" })
+    @Html.ValidationMessageFor(m => m.To)
+
     @Html.Hidden("from", Model.ToString())
     <br />
     <input type="submit" value="Überweisen" class="btn btn-primary" />
+}
+
+@section Scripts{
+    @Scripts.Render("~/bundles/jqueryval")
 }

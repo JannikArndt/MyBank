@@ -139,7 +139,8 @@ namespace MyBank.Controllers
         [Authorize]
         public ActionResult Transfer(int account)
         {
-            return View(account);
+            var model = new TransferViewModel { From = account };
+            return View(model);
         }
 
         /// <summary>
@@ -151,19 +152,22 @@ namespace MyBank.Controllers
         /// <returns>Führt zur Index zurück</returns>
         [HttpPost]
         [Authorize]
-        public RedirectToRouteResult Transfer(int from, int to, double amount)
+        public RedirectToRouteResult Transfer(TransferViewModel model)
         {
-            var sender = _bank.Accounts.FirstOrDefault(acc => acc.Number == from);
-            var receiver = _bank.Accounts.FirstOrDefault(acc => acc.Number == to);
-            if (sender != null && receiver != null)
+            if (ModelState.IsValid)
             {
-                if (!sender.Transfer(amount, receiver))
-                    return RedirectToAction("Index", new { message = "Die Deckung des Kontos reicht nicht aus.", error = true });
-            }
-            else
-                return RedirectToAction("Index", new { message = "Konto nicht gefunden.", error = true });
+                var sender = _bank.Accounts.FirstOrDefault(acc => acc.Number == model.From);
+                var receiver = _bank.Accounts.FirstOrDefault(acc => acc.Number == model.To);
+                if (sender != null && receiver != null)
+                {
+                    if (!sender.Transfer(model.Amount, receiver))
+                        return RedirectToAction("Index", new { message = "Die Deckung des Kontos reicht nicht aus.", error = true });
+                }
+                else
+                    return RedirectToAction("Index", new { message = "Konto nicht gefunden.", error = true });
 
-            _bank.SaveChanges();
+                _bank.SaveChanges();
+            }
             return RedirectToAction("Index", new { message = "Betrag erfolgreich überwiesen.", success = true });
         }
     }
